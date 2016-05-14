@@ -2,7 +2,7 @@ require 'active_support'
 
 module ActiveRecord #:nodoc:
   # Custom create, update, delete methods functionality.
-  # 
+  #
   # Example:
   #
   #   class Employee < ActiveRecord::Base
@@ -75,9 +75,9 @@ module ActiveRecord #:nodoc:
     def self.included(base)
       base.class_eval do
         extend ClassMethods
-        class_attribute :custom_create_method
-        class_attribute :custom_update_method
-        class_attribute :custom_delete_method
+        # class_attribute :custom_create_method
+        # class_attribute :custom_update_method
+        # class_attribute :custom_delete_method
       end
     end
 

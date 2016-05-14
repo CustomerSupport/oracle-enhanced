@@ -42,9 +42,9 @@ require 'digest/sha1'
 
 require 'arel/visitors/bind_visitor'
 
-ActiveRecord::Base.class_eval do
-  class_attribute :custom_create_method, :custom_update_method, :custom_delete_method
-end
+# ActiveRecord::Base.class_eval do
+#   class_attribute :custom_create_method, :custom_update_method, :custom_delete_method
+# end
 
 module ActiveRecord
   class Base
