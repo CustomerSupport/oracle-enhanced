@@ -1079,7 +1079,7 @@ module ActiveRecord
           end
 
           # TODO: Consider to extract another method such as `get_cast_type`
-          case row['sql_type'] 
+          case row['sql_type']
           when /decimal|numeric|number/i
             if get_type_for_column(table_name, oracle_downcase(row['name'])) == :integer
               cast_type = ActiveRecord::OracleEnhanced::Type::Integer.new
@@ -1280,9 +1280,9 @@ module ActiveRecord
           precision = extract_precision(sql_type)
           limit = extract_limit(sql_type)
           if scale == 0
-            ActiveRecord::OracleEnhanced::Type::Integer.new(precision: precision, limit: limit)
+            ActiveRecord::OracleEnhanced::Type::Integer.new(:precision => precision, :limit => limit)
           else
-            Type::Decimal.new(precision: precision, scale: scale)
+            Type::Decimal.new(:precision => precision, :scale => scale)
           end
         end
       end

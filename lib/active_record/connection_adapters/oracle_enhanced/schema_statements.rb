@@ -172,7 +172,7 @@ module ActiveRecord
 
         def add_index_options(table_name, column_name, options = {}) #:nodoc:
           column_names = Array(column_name)
-          index_name   = index_name(table_name, column: column_names)
+          index_name   = index_name(table_name, :column => column_names)
 
           options.assert_valid_keys(:unique, :order, :name, :where, :length, :internal, :tablespace, :options, :using)
 
@@ -400,7 +400,7 @@ module ActiveRecord
           if options[:dependent]
             ActiveSupport::Deprecation.warn "`:dependent` option will be deprecated. Please use `:on_delete` option"
           end
-          case options[:dependent]  
+          case options[:dependent]
           when :delete then options[:on_delete] = :cascade
           when :nullify then options[:on_delete] = :nullify
           else
@@ -440,9 +440,9 @@ module ActiveRecord
 
           fk_info.map do |row|
             options = {
-              column: oracle_downcase(row['column_name']),
-              name: oracle_downcase(row['name']),
-              primary_key: oracle_downcase(row['references_column'])
+              :column => oracle_downcase(row['column_name']),
+              :name => oracle_downcase(row['name']),
+              :primary_key => oracle_downcase(row['references_column'])
             }
             options[:on_delete] = extract_foreign_key_action(row['delete_rule'])
             OracleEnhanced::ForeignKeyDefinition.new(oracle_downcase(table_name), oracle_downcase(row['to_table']), options)
@@ -482,7 +482,7 @@ module ActiveRecord
 
         def create_alter_table(name)
           OracleEnhanced::AlterTable.new create_table_definition(name, false, {})
-        end 
+        end
 
         def tablespace_for(obj_type, tablespace_option, table_name=nil, column_name=nil)
           tablespace_sql = ''

@@ -90,9 +90,9 @@ module ActiveRecord #:nodoc:
               # use table.inspect as it will remove prefix and suffix
               statement_parts = [ ('add_index ' + table.inspect) ]
               statement_parts << index.columns.inspect
-              statement_parts << ('name: ' + index.name.inspect)
-              statement_parts << 'unique: true' if index.unique
-              statement_parts << 'tablespace: ' + index.tablespace.inspect if index.tablespace
+              statement_parts << (':name => ' + index.name.inspect)
+              statement_parts << ':unique => true' if index.unique
+              statement_parts << ':tablespace => ' + index.tablespace.inspect if index.tablespace
             when 'CTXSYS.CONTEXT'
               if index.statement_parameters
                 statement_parts = [ ('add_context_index ' + table.inspect) ]
@@ -100,7 +100,7 @@ module ActiveRecord #:nodoc:
               else
                 statement_parts = [ ('add_context_index ' + table.inspect) ]
                 statement_parts << index.columns.inspect
-                statement_parts << ('name: ' + index.name.inspect)
+                statement_parts << (':name => ' + index.name.inspect)
               end
             else
               # unrecognized index type
@@ -129,21 +129,21 @@ module ActiveRecord #:nodoc:
           tbl.print "  create_table #{table.inspect}"
 
           # addition to make temporary option work
-          tbl.print ", temporary: true" if @connection.temporary_table?(table)
+          tbl.print ", :temporary => true" if @connection.temporary_table?(table)
 
           table_comments = @connection.table_comment(table)
           unless table_comments.nil?
-            tbl.print ", comment: #{table_comments.inspect}"
+            tbl.print ", :comment => #{table_comments.inspect}"
           end
 
           if columns.detect { |c| c.name == pk }
             if pk != 'id'
-              tbl.print %Q(, primary_key: "#{pk}")
+              tbl.print %Q(, :primary_key => "#{pk}")
             end
           else
-            tbl.print ", id: false"
+            tbl.print ", :id => false"
           end
-          tbl.print ", force: :cascade"
+          tbl.print ", :force => :cascade"
           tbl.puts " do |t|"
 
           # then dump all non-primary key columns
@@ -154,8 +154,8 @@ module ActiveRecord #:nodoc:
           end.compact
 
           # find all migration keys used in this table
-          # 
-          # TODO `& column_specs.map(&:keys).flatten` should be executed 
+          #
+          # TODO `& column_specs.map(&:keys).flatten` should be executed
           # in migration_keys_with_oracle_enhanced
           keys = @connection.migration_keys & column_specs.map(&:keys).flatten
 
@@ -182,7 +182,7 @@ module ActiveRecord #:nodoc:
 
           tbl.puts "  end"
           tbl.puts
-          
+
           indexes(table, tbl)
 
           tbl.rewind
@@ -192,20 +192,20 @@ module ActiveRecord #:nodoc:
           stream.puts "#   #{e.message}"
           stream.puts
         end
-        
+
         stream
       end
 
       def remove_prefix_and_suffix(table)
         table.gsub(/^(#{ActiveRecord::Base.table_name_prefix})(.+)(#{ActiveRecord::Base.table_name_suffix})$/,  "\\2")
-      end 
-      
+      end
+
       # remove table name prefix and suffix when doing #inspect (which is used in tables method)
       module TableInspect #:nodoc:
         def inspect
           remove_prefix_and_suffix(self)
         end
-        
+
         private
         def remove_prefix_and_suffix(table_name)
           if table_name =~ /\A#{ActiveRecord::Base.table_name_prefix.to_s.gsub('$','\$')}(.*)#{ActiveRecord::Base.table_name_suffix.to_s.gsub('$','\$')}\Z/

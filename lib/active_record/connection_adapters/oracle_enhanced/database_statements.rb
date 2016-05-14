@@ -192,8 +192,8 @@ module ActiveRecord
           # No read uncommitted nor repeatable read supppoted
           # http://docs.oracle.com/cd/E11882_01/server.112/e26088/statements_10005.htm#SQLRF55422
           {
-            read_committed:   "READ COMMITTED",
-            serializable:     "SERIALIZABLE"
+            :read_committed =>   "READ COMMITTED",
+            :serializable =>     "SERIALIZABLE"
           }
         end
 
